@@ -10,7 +10,6 @@ if ($PSVersionTable.PSVersion -eq '7.*')
 else {
     [void][System.Reflection.Assembly]::LoadWithPartialName('System.Drawing')
     [void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms')
-    [void][System.Reflection.Assembly]::LoadWithPartialName('System.Runtime.InteropServices')
 }
 
 $roundRectMethod = @"
