@@ -100,37 +100,96 @@ $timeType.Location = New-Object System.Drawing.Point(20,100)
 $timeType.Font = 'Microsoft Sans Serif,10'
 $timeType.FlatStyle = 'Flat'
 $timeType_SelectedIndexChanged = {
-    if ($timeType.Text -eq "Standard")
+    if ($timeEntry.Text -match '^(0[0-9]|1[0-9]|2[0-3])[0-5][0-9]$')
     {
-        $output.Text = "$($inputTimePicker.Value.AddHours(5).TimeOfDay.ToString().Split(':')[0..1] -join '')Z"
+        [int]$hours = $timeEntry.Text[0..1] -join ''
+        [string]$minutes = '{0:d2}' -f $($timeEntry.Text[2..3] -join '')
+
+        if ($timeType.Text -eq "Standard") # add 5 hours
+        {
+            $convertedHours = $hours + 5
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 23
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            $output.Text = $converted
+        }
+        elseif ($timeType.Text -eq "Daylight Savings") # add 4 hours
+        {
+            $convertedHours = $hours + 4
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 23
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            $output.Text = $converted
+        }
+        else {
+            $output.Text = "Select Standard or Daylight Savings"
+        }
     }
-    elseif ($timeType.Text -eq "Daylight Savings")
+    elseif ($timeEntry.Text -match '^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
     {
-        $output.Text = "$($inputTimePicker.Value.AddHours(4).TimeOfDay.ToString().Split(':')[0..1] -join '')Z"
+        $timeEntry.Text = $timeEntry.Text.Split(":") -join '' # remove the colon :
+        [int]$hours = $timeEntry.Text[0..1] -join ''
+        [string]$minutes = '{0:d2}' -f $($timeEntry.Text[2..3] -join '')
+
+        if ($timeType.Text -eq "Standard") # add 5 hours
+        {
+            $convertedHours = $hours + 5
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 23
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            $output.Text = $converted
+        }
+        elseif ($timeType.Text -eq "Daylight Savings") # add 4 hours
+        {
+            $convertedHours = $hours + 4
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 23
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            $output.Text = $timeEntry.Text
+        }
+        else {
+            $output.Text = "Select Standard or Daylight Savings"
+        }
+    }
+    elseif (($timeEntry.Text -eq "") -or ($timeEntry.Text -eq $null))
+    {
+        $output.Text = ""
     }
     else
     {
-        $output.Text = "Select Standard or Daylight Savings"
+        $output.Text = "Invalid Entry"
     }
 }
 
 # Add time picker label
-$inputTimePickerLabel = New-Object System.Windows.Forms.Label
-$inputTimePickerLabel.Location = New-Object System.Drawing.Point(20,145)
-$inputTimePickerLabel.AutoSize = $false
-$inputTimePickerLabel.Width = 150
-$inputTimePickerLabel.Font = 'Microsoft Sans Serif,10,style=Bold'
-$inputTimePickerLabel.ForeColor = 'white'
-$inputTimePickerLabel.Text = "Time to Convert:"
+$timeEntryLabel = New-Object System.Windows.Forms.Label
+$timeEntryLabel.Location = New-Object System.Drawing.Point(20,145)
+$timeEntryLabel.AutoSize = $false
+$timeEntryLabel.Width = 150
+$timeEntryLabel.Font = 'Microsoft Sans Serif,10,style=Bold'
+$timeEntryLabel.ForeColor = 'white'
+$timeEntryLabel.Text = "Time to Convert:"
 
-# Add time picker
-$inputTimePicker = New-Object System.Windows.Forms.DateTimePicker
-$inputTimePicker.Location = New-Object System.Drawing.Point(20,175)
-$inputTimePicker.Font = 'Microsoft Sans Serif,10'
-$inputTimePicker.Width = 60
-$inputTimePicker.Format = [System.Windows.Forms.DateTimePickerFormat]::Custom
-$inputTimePicker.CustomFormat = "HHmm"
-$inputTimePicker.ShowUpDown = $true
+# Add time entry point
+$timeEntry = New-Object System.Windows.Forms.TextBox
+$timeEntry.Location = New-Object System.Drawing.Point(20,175)
+$timeEntry.Font = 'Microsoft Sans Serif,10'
+$timeEntry.Width = 60
+$timeEntry.AcceptsReturn = $true
+$timeEntry.Add_KeyDown({
+    if (($_.KeyCode -eq "Return") -or ($_.KeyCode -eq "Enter"))
+    {
+        $convertButton_Click
+    }
+})
 
 # Add the output result label
 $outputLabel = New-Object System.Windows.Forms.Label
@@ -149,22 +208,78 @@ $output.Font = 'Microsoft Sans Serif,10'
 
 # Event handler for the Convert Button
 $convertButton_Click = {
-    if ($timeType.Text -eq "Standard")
+    if ($timeEntry.Text -match '^(0[0-9]|1[0-9]|2[0-3])[0-5][0-9]$')
     {
-        $output.Text = "$($inputTimePicker.Value.AddHours(5).TimeOfDay.ToString().Split(':')[0..1] -join '')Z"
+        [int]$hours = $timeEntry.Text[0..1] -join ''
+        [string]$minutes = '{0:d2}' -f $($timeEntry.Text[2..3] -join '')
+
+        if ($timeType.Text -eq "Standard") # add 5 hours
+        {
+            $convertedHours = $hours + 5
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 23
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            $output.Text = $converted
+        }
+        elseif ($timeType.Text -eq "Daylight Savings") # add 4 hours
+        {
+            $convertedHours = $hours + 4
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 23
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            $output.Text = $converted
+        }
+        else {
+            $output.Text = "Select Standard or Daylight Savings"
+        }
     }
-    elseif ($timeType.Text -eq "Daylight Savings")
+    elseif ($timeEntry.Text -match '^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
     {
-        $output.Text = "$($inputTimePicker.Value.AddHours(4).TimeOfDay.ToString().Split(':')[0..1] -join '')Z"
+        $timeEntry.Text = $timeEntry.Text.Split(":") -join '' # remove the colon :
+        [int]$hours = $timeEntry.Text[0..1] -join ''
+        [string]$minutes = '{0:d2}' -f $($timeEntry.Text[2..3] -join '')
+
+        if ($timeType.Text -eq "Standard") # add 5 hours
+        {
+            $convertedHours = $hours + 5
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 23
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            $output.Text = $converted
+        }
+        elseif ($timeType.Text -eq "Daylight Savings") # add 4 hours
+        {
+            $convertedHours = $hours + 4
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 23
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            $output.Text = $timeEntry.Text
+        }
+        else {
+            $output.Text = "Select Standard or Daylight Savings"
+        }
     }
-    else {
-        $output.Text = "Select Standard or Daylight Savings"
+    elseif (($timeEntry.Text -eq "") -or ($timeEntry.Text -eq $null))
+    {
+        $output.Text = ""
+    }
+    else
+    {
+        $output.Text = "Invalid Entry"
     }
 }
 
 # Add the convert button
 $convertButton = New-Object System.Windows.Forms.Button
-$convertButton.Location = New-Object System.Drawing.Point(365,300)
+$convertButton.Location = New-Object System.Drawing.Point(450,300)
 $convertButton.Size = New-Object System.Drawing.Size(100,50)
 $convertButton.Text = "Convert"
 $convertButton.Font = 'Microsoft Sans Serif,11,style=Bold'
@@ -177,29 +292,13 @@ $convertButton.FlatAppearance.MouseOverBackColor = '#0c1524'
 $convertButton.add_Click($convertButton_Click)
 $form.AcceptButton = $convertButton
 
-# Add the cancel button
-$cancelButton = New-Object System.Windows.Forms.Button
-$cancelButton.Location = New-Object System.Drawing.Point(475,300)
-$cancelButton.Size = New-Object System.Drawing.Size(100,50)
-$cancelButton.Text = "Cancel"
-$cancelButton.Font = 'Microsoft Sans Serif,11'
-$cancelButton.TextAlign = "MiddleCenter"
-$cancelButton.ForeColor = 'white'
-$cancelButton.FlatStyle = 'Flat'
-$cancelButton.FlatAppearance.BorderColor = '#0c1524'
-$cancelButton.FlatAppearance.BorderSize = '0'
-$cancelButton.FlatAppearance.MouseOverBackColor = '#0c1524'
-$cancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
-$form.AcceptButton = $cancelButton
-
 # Add all the elements to the form
 $form.Controls.Add($title)
 $form.Controls.Add($description)
 $form.Controls.Add($convertButton)
-$form.Controls.Add($cancelButton)
 $form.Controls.Add($timeType)
-$form.Controls.Add($inputTimePicker)
-$form.Controls.Add($inputTimePickerLabel)
+$form.Controls.Add($timeEntry)
+$form.Controls.Add($timeEntryLabel)
 $form.Controls.Add($outputLabel)
 $form.Controls.Add($output)
 $form.Controls.Add($close)
