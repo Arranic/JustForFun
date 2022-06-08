@@ -110,7 +110,7 @@ $timeType_SelectedIndexChanged = {
             $convertedHours = $hours + 5
             if ($convertedHours -gt 23)
             {
-                $convertedHours = $convertedHours % 23
+                $convertedHours = $convertedHours % 24
             }
             [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
             $output.Text = $converted
@@ -120,7 +120,7 @@ $timeType_SelectedIndexChanged = {
             $convertedHours = $hours + 4
             if ($convertedHours -gt 23)
             {
-                $convertedHours = $convertedHours % 23
+                $convertedHours = $convertedHours % 24
             }
             [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
             $output.Text = $converted
@@ -140,7 +140,7 @@ $timeType_SelectedIndexChanged = {
             $convertedHours = $hours + 5
             if ($convertedHours -gt 23)
             {
-                $convertedHours = $convertedHours % 23
+                $convertedHours = $convertedHours % 24
             }
             [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
             $output.Text = $converted
@@ -150,7 +150,7 @@ $timeType_SelectedIndexChanged = {
             $convertedHours = $hours + 4
             if ($convertedHours -gt 23)
             {
-                $convertedHours = $convertedHours % 23
+                $convertedHours = $convertedHours % 24
             }
             [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
             $output.Text = $timeEntry.Text
@@ -218,7 +218,7 @@ $convertButton_Click = {
             $convertedHours = $hours + 5
             if ($convertedHours -gt 23)
             {
-                $convertedHours = $convertedHours % 23
+                $convertedHours = $convertedHours % 24
             }
             [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
             $output.Text = $converted
@@ -228,7 +228,7 @@ $convertButton_Click = {
             $convertedHours = $hours + 4
             if ($convertedHours -gt 23)
             {
-                $convertedHours = $convertedHours % 23
+                $convertedHours = $convertedHours % 24
             }
             [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
             $output.Text = $converted
@@ -248,7 +248,7 @@ $convertButton_Click = {
             $convertedHours = $hours + 5
             if ($convertedHours -gt 23)
             {
-                $convertedHours = $convertedHours % 23
+                $convertedHours = $convertedHours % 24
             }
             [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
             $output.Text = $converted
@@ -258,7 +258,7 @@ $convertButton_Click = {
             $convertedHours = $hours + 4
             if ($convertedHours -gt 23)
             {
-                $convertedHours = $convertedHours % 23
+                $convertedHours = $convertedHours % 24
             }
             [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
             $output.Text = $timeEntry.Text
