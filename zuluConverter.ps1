@@ -44,7 +44,7 @@ $title = New-Object System.Windows.Forms.Label
 $title.Text = "Zulu Time Converter"
 $title.AutoSize = $true
 $title.Location = New-Object System.Drawing.Point(20,20)
-$title.Font = 'Microsoft Sans Serif,13,style=Bold'
+$title.Font = 'Microsoft Sans Serif,15,style=Bold'
 $title.ForeColor = 'white'
 $title.Add_MouseDown({$global:drag = $true
                         $global:mouseDragX = [System.Windows.Forms.Cursor]::Position.X - $form.Left
