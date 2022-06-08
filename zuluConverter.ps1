@@ -38,6 +38,18 @@ $form.add_Load({
     $hrgn = $helpers::CreateRoundRectRgn(0,0,$form.Width, $form.Height, 20,20)
     $form.Region = [System.Drawing.Region]::FromHrgn($hrgn)
 })
+$formRect = New-Object System.Drawing.Rectangle
+$formRect.Location = $form.Location
+$formRect.Width = $form.Width
+$formRect.Height = $form.Height
+$form.add_Paint({
+    $global:brush = New-Object System.Drawing.Drawing2D.LinearGradientBrush((New-Object System.Drawing.Point($form.DisplayRectangle.X,$form.DisplayRectangle.Y)),(New-Object System.Drawing.Point($formRect.Width,$formRect.Height)),"#292e36","#20474f")
+    $_.graphics.fillrectangle($brush,$form.DisplayRectangle)
+})
+
+#New-Object System.Drawing.Drawing2D.LinearGradientBrush($formRect,"#292e36","#20474f", [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal)
+
+
 
 # Create Title for the form
 $title = New-Object System.Windows.Forms.Label
@@ -46,6 +58,7 @@ $title.AutoSize = $true
 $title.Location = New-Object System.Drawing.Point(20,20)
 $title.Font = 'Microsoft Sans Serif,15,style=Bold'
 $title.ForeColor = 'white'
+$title.BackColor = 'transparent'
 $title.Add_MouseDown({$global:drag = $true
                         $global:mouseDragX = [System.Windows.Forms.Cursor]::Position.X - $form.Left
                         $global:mouseDragY = [System.Windows.Forms.Cursor]::Position.Y - $form.Top
@@ -76,6 +89,7 @@ $close.Text = "X"
 $close.TextAlign = 'MiddleCenter'
 $close.FlatStyle = "Flat"
 $close.FlatAppearance.BorderColor = '#292e36'
+$close.FlatAppearance.BorderSize = 0
 $close.FlatAppearance.MouseOverBackColor = 'red'
 $close.add_Click({$form.Add_FormClosing({$_.Cancel=$false});$form.Close()})
 $close.Show()
@@ -89,6 +103,7 @@ $description.Height = 50
 $description.Location = New-Object System.Drawing.Point(20,50)
 $description.Font = 'Microsoft Sans Serif,10'
 $description.ForeColor = 'white'
+$description.BackColor = 'transparent'
 
 # Add time type selector
 $timeType = New-Object System.Windows.Forms.ComboBox
@@ -176,6 +191,7 @@ $timeEntryLabel.AutoSize = $false
 $timeEntryLabel.Width = 150
 $timeEntryLabel.Font = 'Microsoft Sans Serif,10,style=Bold'
 $timeEntryLabel.ForeColor = 'white'
+$timeEntryLabel.BackColor = 'transparent'
 $timeEntryLabel.Text = "Time to Convert:"
 
 # Add time entry point
@@ -199,6 +215,7 @@ $outputLabel.Width = 150
 $outputLabel.Font = 'Microsoft Sans Serif,10,style=Bold'
 $outputLabel.ForeColor = 'white'
 $outputLabel.Text = "Output:"
+$outputLabel.BackColor = 'transparent'
 
 # Add the Output Result
 $output = New-Object System.Windows.Forms.TextBox
@@ -279,12 +296,13 @@ $convertButton_Click = {
 
 # Add the convert button
 $convertButton = New-Object System.Windows.Forms.Button
-$convertButton.Location = New-Object System.Drawing.Point(450,300)
+$convertButton.Location = New-Object System.Drawing.Point(470,300)
 $convertButton.Size = New-Object System.Drawing.Size(100,50)
 $convertButton.Text = "Convert"
 $convertButton.Font = 'Microsoft Sans Serif,11,style=Bold'
 $convertButton.TextAlign = "MiddleCenter"
 $convertButton.ForeColor = 'white'
+$convertButton.BackColor = 'transparent'
 $convertButton.FlatStyle = 'Flat'
 $convertButton.FlatAppearance.BorderColor = '#0c1524'
 $convertButton.FlatAppearance.BorderSize = '0'
