@@ -29,7 +29,7 @@ $form.Width = 600
 $form.Height = 400
 $form.StartPosition = 'CenterScreen'
 $form.BackColor = "#292e36"
-$form.TopMost = $true
+$form.TopMost = $false
 $form.FormBorderStyle = "None"
 $form.MaximizeBox = $false
 $form.MinimizeBox = $false
@@ -47,6 +47,22 @@ $title.AutoSize = $true
 $title.Location = New-Object System.Drawing.Point(20,20)
 $title.Font = 'Microsoft Sans Serif,13,style=Bold'
 $title.ForeColor = 'white'
+$title.Add_MouseDown({$global:drag = $true
+                        $global:mouseDragX = [System.Windows.Forms.Cursor]::Position.X - $form.Left
+                        $global:mouseDragY = [System.Windows.Forms.Cursor]::Position.Y - $form.Top
+                    })
+$title.Add_MouseMove({
+    if($global:drag)
+    {
+        $screen = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea
+        $currentX = [System.Windows.Forms.Cursor]::Position.X
+        $currentY = [System.Windows.Forms.Cursor]::Position.Y
+        [int]$newX = [System.Math]::Min($currentX-$global:mouseDragX, $screen.Right - $form.Width)
+        [int]$newY = [System.Math]::Min($currentY-$global:mouseDragY, $screen.Bottom - $form.Height)
+        $form.Location = New-Object System.Drawing.Point($newX,$newY)
+    }
+})
+$title.Add_MouseUp({$global:drag = $false})
 
 # Create close button
 $close = New-Object System.Windows.Forms.Button
@@ -67,7 +83,7 @@ $close.Show()
 
 # Add a description
 $description = New-Object System.Windows.Forms.Label
-$description.Text = "Enter the current time, select whether it is Daylight Savings or Standard, and then press 'Convert'."
+$description.Text = "Enter the current time in Eastern, select whether it is Daylight Savings or Standard, and then press 'Convert'."
 $description.AutoSize = $false
 $description.Width = 450
 $description.Height = 50
