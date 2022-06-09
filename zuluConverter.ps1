@@ -257,7 +257,7 @@ $close.Show()
 
 # Add a description
 $description = New-Object System.Windows.Forms.Label
-$description.Text = "Enter the current time in Eastern, select whether it is Daylight Savings or Standard, and then press 'Convert'."
+$description.Text = "Enter the time to convert, select the time zone to convert to, select whether it is Daylight Savings or Standard, and then press 'Convert'."
 $description.AutoSize = $false
 $description.Width = 450
 $description.Height = 50
@@ -266,9 +266,18 @@ $description.Font = 'Microsoft Sans Serif,10'
 $description.ForeColor = 'white'
 $description.BackColor = 'transparent'
 
+# Add zone label
+$zoneLabel = New-Object System.Windows.Forms.Label
+$zoneLabel.Location = New-Object System.Drawing.Point(260,105)
+$zoneLabel.Text = "The time zone you are converting to."
+$zoneLabel.Font = 'Microsoft Sans Serif,8,style=Italic'
+$zoneLabel.BackColor = 'transparent'
+$zoneLabel.ForeColor = 'gray'
+$zoneLabel.Width = 250
+
 # Add zone selector
 $zone = New-Object System.Windows.Forms.ComboBox
-$zone.Text = "Convert Time To:"
+$zone.Text = "Select Output Time Zone"
 $zone.Width = 230
 $zone.Height = 24
 $zone.AutoSize = $false
@@ -404,6 +413,7 @@ $form.AcceptButton = $convertButton
     $title
     $description
     $convertButton
+    $zoneLabel
     $zone
     $timeType
     $timeEntry
