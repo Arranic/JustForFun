@@ -268,7 +268,7 @@ $description.BackColor = 'transparent'
 
 # Add zone selector
 $zone = New-Object System.Windows.Forms.ComboBox
-$zone.Text = "Convert Time TO:"
+$zone.Text = "Convert Time To:"
 $zone.Width = 230
 $zone.Height = 24
 $zone.AutoSize = $false
