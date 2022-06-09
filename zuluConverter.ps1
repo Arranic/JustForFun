@@ -20,6 +20,170 @@ $helpers = Add-Type -MemberDefinition $roundRectMethod -Name Helpers -Namespace 
 
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
+#region Functions
+function ConvertTo-Zulu {
+    [CmdletBinding()]
+    param (
+        # text value from the time entry box. MUST BE PASSED IN AS A STRING
+        [Parameter(Mandatory = $true)]
+        [string]$timeEntry,
+
+        # parameter specifying daylight savings or standard
+        [Parameter(Mandatory = $true)]
+        [string]$timeType
+    )
+    
+    if ($timeEntry -match '^(0[0-9]|1[0-9]|2[0-3])[0-5][0-9]$')
+    {
+        [int]$hours = $timeEntry[0..1] -join ''
+        [string]$minutes = '{0:d2}' -f $($timeEntry[2..3] -join '')
+
+        if ($timeType -eq "Standard") # add 5 hours
+        {
+            $convertedHours = $hours + 5
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 24
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            Return $converted
+        }
+        elseif ($timeType -eq "Daylight Savings") # add 4 hours
+        {
+            $convertedHours = $hours + 4
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 24
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            Return $converted
+        }
+        else {
+            Return "Select Standard or Daylight Savings"
+        }
+    }
+    elseif ($timeEntry -match '^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
+    {
+        $timeEntry = $timeEntry.Split(":") -join '' # remove the colon :
+        [int]$hours = $timeEntry[0..1] -join ''
+        [string]$minutes = '{0:d2}' -f $($timeEntry[2..3] -join '')
+
+        if ($timeType -eq "Standard") # add 5 hours
+        {
+            $convertedHours = $hours + 5
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 24
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            Return $converted 
+        }
+        elseif ($timeType -eq "Daylight Savings") # add 4 hours
+        {
+            $convertedHours = $hours + 4
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 24
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            Return $converted
+        }
+        else {
+            Return "Select Standard or Daylight Savings"
+        }
+    }
+    elseif (($timeEntry -eq "") -or ($timeEntry -eq $null))
+    {
+        Return ""
+    }
+    else
+    {
+        Return "Invalid Entry"
+    }
+}
+
+function ConvertTo-Eastern {
+    [CmdletBinding()]
+    param (
+        # text value from the time entry box. MUST BE PASSED IN AS A STRING
+        [Parameter(Mandatory = $true)]
+        [string]$timeEntry,
+
+        # parameter specifying daylight savings or standard
+        [Parameter(Mandatory = $true)]
+        [string]$timeType
+    )
+    
+    if ($timeEntry -match '^(0[0-9]|1[0-9]|2[0-3])[0-5][0-9]$')
+    {
+        [int]$hours = $timeEntry[0..1] -join ''
+        [string]$minutes = '{0:d2}' -f $($timeEntry[2..3] -join '')
+
+        if ($timeType -eq "Standard") # add 5 hours
+        {
+            $convertedHours = $hours - 5
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 24
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            Return $converted
+        }
+        elseif ($timeType -eq "Daylight Savings") # add 4 hours
+        {
+            $convertedHours = $hours - 4
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 24
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            Return $converted
+        }
+        else {
+            Return "Select Standard or Daylight Savings"
+        }
+    }
+    elseif ($timeEntry -match '^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
+    {
+        $timeEntry = $timeEntry.Split(":") -join '' # remove the colon :
+        [int]$hours = $timeEntry[0..1] -join ''
+        [string]$minutes = '{0:d2}' -f $($timeEntry[2..3] -join '')
+
+        if ($timeType -eq "Standard") # add 5 hours
+        {
+            $convertedHours = $hours - 5
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 24
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            Return $converted 
+        }
+        elseif ($timeType -eq "Daylight Savings") # add 4 hours
+        {
+            $convertedHours = $hours - 4
+            if ($convertedHours -gt 23)
+            {
+                $convertedHours = $convertedHours % 24
+            }
+            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
+            Return $converted
+        }
+        else {
+            Return "Select Standard or Daylight Savings"
+        }
+    }
+    elseif (($timeEntry -eq "") -or ($timeEntry -eq $null))
+    {
+        Return ""
+    }
+    else
+    {
+        Return "Invalid Entry"
+    }
+}
+#endregion Functions
+
 # create the form base
 $form = New-Object -TypeName System.Windows.Forms.Form
 $form.Text = "Zulu Converter"
@@ -47,22 +211,19 @@ $form.add_Paint({
     $_.graphics.fillrectangle($brush,$form.DisplayRectangle)
 })
 
-#New-Object System.Drawing.Drawing2D.LinearGradientBrush($formRect,"#292e36","#20474f", [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal)
-
-
-
 # Create Title for the form
 $title = New-Object System.Windows.Forms.Label
-$title.Text = "Zulu Time Converter"
+$title.Text = "Time Converter"
 $title.AutoSize = $true
 $title.Location = New-Object System.Drawing.Point(20,20)
 $title.Font = 'Microsoft Sans Serif,15,style=Bold'
 $title.ForeColor = 'white'
 $title.BackColor = 'transparent'
-$title.Add_MouseDown({$global:drag = $true
-                        $global:mouseDragX = [System.Windows.Forms.Cursor]::Position.X - $form.Left
-                        $global:mouseDragY = [System.Windows.Forms.Cursor]::Position.Y - $form.Top
-                    })
+$title.Add_MouseDown({
+    $global:drag = $true
+    $global:mouseDragX = [System.Windows.Forms.Cursor]::Position.X - $form.Left
+    $global:mouseDragY = [System.Windows.Forms.Cursor]::Position.Y - $form.Top
+})
 $title.Add_MouseMove({
     if($global:drag)
     {
@@ -105,88 +266,58 @@ $description.Font = 'Microsoft Sans Serif,10'
 $description.ForeColor = 'white'
 $description.BackColor = 'transparent'
 
+# Add zone selector
+$zone = New-Object System.Windows.Forms.ComboBox
+$zone.Text = "Convert Time TO:"
+$zone.Width = 230
+$zone.Height = 24
+$zone.AutoSize = $false
+$zoneItems = @("Eastern","Zulu")
+$zone.Items.AddRange($zoneItems)
+$zone.Location = New-Object System.Drawing.Point(20,100)
+
 # Add time type selector
 $timeType = New-Object System.Windows.Forms.ComboBox
 $timeType.Text = "Select Standard/Daylight Savings"
 $timeType.Width = 230
-$timeType.AutoSize = $true
+$timeType.Height = 24
+$timeType.AutoSize = $false
 @('Standard','Daylight Savings') | ForEach-Object {[void] $timeType.Items.Add($_)}
-$timeType.Location = New-Object System.Drawing.Point(20,100)
+$timeType.Location = New-Object System.Drawing.Point(20,145)
 $timeType.Font = 'Microsoft Sans Serif,10'
 $timeType.FlatStyle = 'Flat'
 $timeType_SelectedIndexChanged = {
-    if ($timeEntry.Text -match '^(0[0-9]|1[0-9]|2[0-3])[0-5][0-9]$')
+    if ($zone.Text -eq "Zulu")
     {
-        [int]$hours = $timeEntry.Text[0..1] -join ''
-        [string]$minutes = '{0:d2}' -f $($timeEntry.Text[2..3] -join '')
-
-        if ($timeType.Text -eq "Standard") # add 5 hours
+        if ($timeEntry.Text)
         {
-            $convertedHours = $hours + 5
-            if ($convertedHours -gt 23)
-            {
-                $convertedHours = $convertedHours % 24
-            }
-            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
-            $output.Text = $converted
+            $output.Text = ConvertTo-Zulu -timeEntry $timeEntry.Text -timeType $timeType.Text
         }
-        elseif ($timeType.Text -eq "Daylight Savings") # add 4 hours
+        else
         {
-            $convertedHours = $hours + 4
-            if ($convertedHours -gt 23)
-            {
-                $convertedHours = $convertedHours % 24
-            }
-            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
-            $output.Text = $converted
-        }
-        else {
-            $output.Text = "Select Standard or Daylight Savings"
+            $output.Text = ""
         }
     }
-    elseif ($timeEntry.Text -match '^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
+    elseif ($zone.Text -eq "Eastern")
     {
-        $timeEntry.Text = $timeEntry.Text.Split(":") -join '' # remove the colon :
-        [int]$hours = $timeEntry.Text[0..1] -join ''
-        [string]$minutes = '{0:d2}' -f $($timeEntry.Text[2..3] -join '')
-
-        if ($timeType.Text -eq "Standard") # add 5 hours
+        if ($timeEntry.Text)
         {
-            $convertedHours = $hours + 5
-            if ($convertedHours -gt 23)
-            {
-                $convertedHours = $convertedHours % 24
-            }
-            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
-            $output.Text = $converted
+            $output.Text = ConvertTo-Eastern -timeEntry $timeEntry.Text -timeType $timeType.Text
         }
-        elseif ($timeType.Text -eq "Daylight Savings") # add 4 hours
+        else
         {
-            $convertedHours = $hours + 4
-            if ($convertedHours -gt 23)
-            {
-                $convertedHours = $convertedHours % 24
-            }
-            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
-            $output.Text = $timeEntry.Text
-        }
-        else {
-            $output.Text = "Select Standard or Daylight Savings"
+            $output.Text = ""
         }
     }
-    elseif (($timeEntry.Text -eq "") -or ($timeEntry.Text -eq $null))
-    {
-        $output.Text = ""
-    }
-    else
-    {
-        $output.Text = "Invalid Entry"
+    else { # if there is no selection, do nothing
+        $output.Text = $null
     }
 }
+$timeType.add_SelectedIndexChanged($timeType_SelectedIndexChanged)
 
 # Add time picker label
 $timeEntryLabel = New-Object System.Windows.Forms.Label
-$timeEntryLabel.Location = New-Object System.Drawing.Point(20,145)
+$timeEntryLabel.Location = New-Object System.Drawing.Point(20,190)
 $timeEntryLabel.AutoSize = $false
 $timeEntryLabel.Width = 150
 $timeEntryLabel.Font = 'Microsoft Sans Serif,10,style=Bold'
@@ -196,7 +327,7 @@ $timeEntryLabel.Text = "Time to Convert:"
 
 # Add time entry point
 $timeEntry = New-Object System.Windows.Forms.TextBox
-$timeEntry.Location = New-Object System.Drawing.Point(20,175)
+$timeEntry.Location = New-Object System.Drawing.Point(20,220)
 $timeEntry.Font = 'Microsoft Sans Serif,10'
 $timeEntry.Width = 60
 $timeEntry.AcceptsReturn = $true
@@ -209,7 +340,7 @@ $timeEntry.Add_KeyDown({
 
 # Add the output result label
 $outputLabel = New-Object System.Windows.Forms.Label
-$outputLabel.Location = New-Object System.Drawing.Point(20,210)
+$outputLabel.Location = New-Object System.Drawing.Point(20,255)
 $outputLabel.AutoSize = $false
 $outputLabel.Width = 150
 $outputLabel.Font = 'Microsoft Sans Serif,10,style=Bold'
@@ -219,78 +350,36 @@ $outputLabel.BackColor = 'transparent'
 
 # Add the Output Result
 $output = New-Object System.Windows.Forms.TextBox
-$output.Location = New-Object System.Drawing.Point(20,240)
+$output.Location = New-Object System.Drawing.Point(20,285)
 $output.Width = 250
 $output.Font = 'Microsoft Sans Serif,10'
 
 # Event handler for the Convert Button
 $convertButton_Click = {
-    if ($timeEntry.Text -match '^(0[0-9]|1[0-9]|2[0-3])[0-5][0-9]$')
+    if ($zone.Text -eq "Zulu")
     {
-        [int]$hours = $timeEntry.Text[0..1] -join ''
-        [string]$minutes = '{0:d2}' -f $($timeEntry.Text[2..3] -join '')
-
-        if ($timeType.Text -eq "Standard") # add 5 hours
+        if ($timeEntry.Text)
         {
-            $convertedHours = $hours + 5
-            if ($convertedHours -gt 23)
-            {
-                $convertedHours = $convertedHours % 24
-            }
-            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
-            $output.Text = $converted
+            $output.Text = ConvertTo-Zulu -timeEntry $timeEntry.Text -timeType $timeType.Text
         }
-        elseif ($timeType.Text -eq "Daylight Savings") # add 4 hours
+        else
         {
-            $convertedHours = $hours + 4
-            if ($convertedHours -gt 23)
-            {
-                $convertedHours = $convertedHours % 24
-            }
-            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
-            $output.Text = $converted
-        }
-        else {
-            $output.Text = "Select Standard or Daylight Savings"
+            $output.Text = ""
         }
     }
-    elseif ($timeEntry.Text -match '^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
+    elseif ($zone.Text -eq "Eastern")
     {
-        $timeEntry.Text = $timeEntry.Text.Split(":") -join '' # remove the colon :
-        [int]$hours = $timeEntry.Text[0..1] -join ''
-        [string]$minutes = '{0:d2}' -f $($timeEntry.Text[2..3] -join '')
-
-        if ($timeType.Text -eq "Standard") # add 5 hours
+        if ($timeEntry.Text)
         {
-            $convertedHours = $hours + 5
-            if ($convertedHours -gt 23)
-            {
-                $convertedHours = $convertedHours % 24
-            }
-            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
-            $output.Text = $converted
+            $output.Text = ConvertTo-Eastern -timeEntry $timeEntry.Text -timeType $timeType.Text
         }
-        elseif ($timeType.Text -eq "Daylight Savings") # add 4 hours
+        else
         {
-            $convertedHours = $hours + 4
-            if ($convertedHours -gt 23)
-            {
-                $convertedHours = $convertedHours % 24
-            }
-            [string]$converted = '{0:d4}' -f [int]$("$($convertedHours)" + "$($minutes)")
-            $output.Text = $timeEntry.Text
-        }
-        else {
-            $output.Text = "Select Standard or Daylight Savings"
+            $output.Text = ""
         }
     }
-    elseif (($timeEntry.Text -eq "") -or ($timeEntry.Text -eq $null))
-    {
-        $output.Text = ""
-    }
-    else
-    {
-        $output.Text = "Invalid Entry"
+    else { # if there is no selection, do nothing
+        $output.Text = $null
     }
 }
 
@@ -311,21 +400,25 @@ $convertButton.add_Click($convertButton_Click)
 $form.AcceptButton = $convertButton
 
 # Add all the elements to the form
-$form.Controls.Add($title)
-$form.Controls.Add($description)
-$form.Controls.Add($convertButton)
-$form.Controls.Add($timeType)
-$form.Controls.Add($timeEntry)
-$form.Controls.Add($timeEntryLabel)
-$form.Controls.Add($outputLabel)
-$form.Controls.Add($output)
-$form.Controls.Add($close)
-
+[array]$controls = @(
+    $title
+    $description
+    $convertButton
+    $zone
+    $timeType
+    $timeEntry
+    $timeEntryLabel
+    $outputLabel
+    $output
+    $close
+)
+$form.Controls.AddRange($controls)
 $form.Activate()
 $result = $null
 
+
+# Main loop
 while ($result -ne [System.Windows.Forms.DialogResult]::Cancel)
 {
-    $timeType.add_SelectedIndexChanged($timeType_SelectedIndexChanged)
     $result = $form.ShowDialog()
 }
